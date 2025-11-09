@@ -1,133 +1,139 @@
 #include <iostream>
-#include <string>
 using namespace std;
 
-class BankAccount {
+class Account {
 private:
-    int accNo;
-    string name;
-    double balance;
+    int accNumber;
+    string holderName;
+    double accBalance;
 
 public:
-    void createAccount() {
-        cout << "Enter Account Number: ";
-        cin >> accNo;
-        cout << "Enter Name: ";
-        cin >> name;
-        cout << "Enter Initial Balance: ";
-        cin >> balance;
-        cout << "Account Created Successfully!\n";
+    void openAccount() {
+        cout << "Enter account number: ";
+        cin >> accNumber;
+        cout << "Enter holder name: ";
+        cin >> holderName;
+        cout << "Enter starting balance: ";
+        cin >> accBalance;
+        cout << "\nAccount created successfully!\n";
     }
 
-    void displayAccount() {
-        cout << "Account No: " << accNo
-             << " | Name: " << name
-             << " | Balance: Rs." << balance << endl;
+    void showAccount() {
+        cout << "-------------------------------------\n";
+        cout << "Account No: " << accNumber << "\n";
+        cout << "Name: " << holderName << "\n";
+        cout << "Current Balance: Rs. " << accBalance << "\n";
+        cout << "-------------------------------------\n";
     }
 
-    int getAccNo() {
-        return accNo;
+    int getNumber() {
+        return accNumber;
     }
 
-    void deposit(double amount) {
-        balance += amount;
-        cout << "Amount Deposited Successfully!\n";
-        cout << "Updated Balance: Rs." << balance << endl;
+    void addMoney(double amt) {
+        accBalance += amt;
+        cout << "Deposited Rs." << amt << " successfully.\n";
+        cout << "Updated Balance: Rs." << accBalance << "\n";
     }
 
-    void withdraw(double amount) {
-        if (amount > balance)
-            cout << "Insufficient Balance!\n";
-        else {
-            balance -= amount;
-            cout << "Withdrawal Successful!\n";
-            cout << "Updated Balance: Rs." << balance << endl;
+    void takeMoney(double amt) {
+        if (amt > accBalance) {
+            cout << "Not enough balance!\n";
+        } else {
+            accBalance -= amt;
+            cout << "Withdrawal of Rs." << amt << " done.\n";
+            cout << "Remaining Balance: Rs." << accBalance << "\n";
         }
     }
 };
 
 int main() {
-    BankAccount accounts[10];
-    int count = 0, choice, accNo;
-    double amount;
+    Account accList[10];
+    int total = 0, option, num;
+    double amt;
 
     do {
-        cout << "\n--- Bank Account Management ---\n";
-        cout << "1. Create Account\n";
-        cout << "2. Search Account\n";
-        cout << "3. Deposit Money\n";
-        cout << "4. Withdraw Money\n";
+        cout << "\n====== Bank Management System ======\n";
+        cout << "1. Open New Account\n";
+        cout << "2. View Account\n";
+        cout << "3. Deposit Amount\n";
+        cout << "4. Withdraw Amount\n";
         cout << "5. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
+        cout << "Select option: ";
+        cin >> option;
 
-        switch (choice) {
+        switch (option) {
             case 1:
-                accounts[count].createAccount();
-                count++;
-                break;
-
-            case 2:
-                cout << "Enter Account Number to search: ";
-                cin >> accNo;
-                {
-                    bool found = false;
-                    for (int i = 0; i < count; i++) {
-                        if (accounts[i].getAccNo() == accNo) {
-                            accounts[i].displayAccount();
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) cout << "Account not found!\n";
+                if (total < 10) {
+                    accList[total].openAccount();
+                    total++;
+                } else {
+                    cout << "Account limit reached!\n";
                 }
                 break;
 
-            case 3:
-                cout << "Enter Account Number: ";
-                cin >> accNo;
-                cout << "Enter amount to deposit: ";
-                cin >> amount;
-                {
-                    bool found = false;
-                    for (int i = 0; i < count; i++) {
-                        if (accounts[i].getAccNo() == accNo) {
-                            accounts[i].deposit(amount);
-                            found = true;
-                            break;
-                        }
+            case 2: {
+                cout << "Enter account number to view: ";
+                cin >> num;
+                bool exists = false;
+                for (int i = 0; i < total; i++) {
+                    if (accList[i].getNumber() == num) {
+                        accList[i].showAccount();
+                        exists = true;
+                        break;
                     }
-                    if (!found) cout << "Account not found!\n";
                 }
+                if (!exists)
+                    cout << "Account not found!\n";
                 break;
+            }
 
-            case 4:
-                cout << "Enter Account Number: ";
-                cin >> accNo;
+            case 3: {
+                cout << "Enter account number: ";
+                cin >> num;
+                cout << "Enter deposit amount: ";
+                cin >> amt;
+                bool done = false;
+                for (int i = 0; i < total; i++) {
+                    if (accList[i].getNumber() == num) {
+                        accList[i].addMoney(amt);
+                        done = true;
+                        break;
+                    }
+                }
+                if (!done)
+                    cout << "Account not found!\n";
+                break;
+            }
+
+            case 4: {
+                cout << "Enter account number: ";
+                cin >> num;
                 cout << "Enter amount to withdraw: ";
-                cin >> amount;
-                {
-                    bool found = false;
-                    for (int i = 0; i < count; i++) {
-                        if (accounts[i].getAccNo() == accNo) {
-                            accounts[i].withdraw(amount);
-                            found = true;
-                            break;
-                        }
+                cin >> amt;
+                bool success = false;
+                for (int i = 0; i < total; i++) {
+                    if (accList[i].getNumber() == num) {
+                        accList[i].takeMoney(amt);
+                        success = true;
+                        break;
                     }
-                    if (!found) cout << "Account not found!\n";
                 }
+                if (!success)
+                    cout << "Account not found!\n";
                 break;
+            }
 
             case 5:
-                cout << "Exiting program...\n";
-                cout<< "Program Successfully Ended.";
+                cout << "\nThank you for using our system.\n";
+                cout << "Program ended successfully.\n";
                 break;
 
             default:
-                cout << "Invalid choice!\n";
+                cout << "Invalid input! Try again.\n";
         }
-    } while (choice != 5);
+
+    } while (option != 5);
 
     return 0;
 }
